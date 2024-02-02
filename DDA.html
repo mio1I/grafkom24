@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDA Line Drawing</title>
+    <style>
+        #canvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <label for="startX">Start X:</label>
+    <input type="number" id="startX" value="100">
+    
+    <label for="startY">Start Y:</label>
+    <input type="number" id="startY" value="100">
+    
+    <label for="endX">End X:</label>
+    <input type="number" id="endX" value="0">
+    
+    <label for="endY">End Y:</label>
+    <input type="number" id="endY" value="0">
+    
+    <button onclick="drawLine()">Draw Line</button>
+
+    <canvas id="canvas" width="512" height="512"></canvas>
+
+    <script>
+        function drawLine() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const startX = parseInt(document.getElementById('startX').value);
+            const startY = parseInt(document.getElementById('startY').value);
+            const endX = parseInt(document.getElementById('endX').value);
+            const endY = parseInt(document.getElementById('endY').value);
+
+            let dx = endX - startX;
+            let dy = endY - startY;
+            let steps = Math.max(Math.abs(dx), Math.abs(dy));
+            let xIncrement = dx / steps;
+            let yIncrement = dy / steps;
+
+            let x = startX;
+            let y = startY;
+
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+
+            for (let i = 1; i <= steps; i++) {
+                x += xIncrement;
+                y += yIncrement;
+                ctx.lineTo(Math.round(x), Math.round(y));
+            }
+
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html>
