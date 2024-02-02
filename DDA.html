@@ -12,32 +12,54 @@
 </head>
 <body>
     <label for="startX">Start X:</label>
-    <input type="number" id="startX" value="100">
+    <input type="number" id="startX" value="0">
     
     <label for="startY">Start Y:</label>
-    <input type="number" id="startY" value="100">
+    <input type="number" id="startY" value="0">
     
     <label for="endX">End X:</label>
-    <input type="number" id="endX" value="0">
+    <input type="number" id="endX" value="100">
     
     <label for="endY">End Y:</label>
-    <input type="number" id="endY" value="0">
+    <input type="number" id="endY" value="100">
     
-    <button onclick="drawLine()">Draw Line</button>
-
-    <canvas id="canvas" width="512" height="512"></canvas>
+    <canvas id="canvas" width="512" height="512" onclick="setCoordinates(event)"></canvas>
 
     <script>
+        let startSet = false;
+        let previousLine = null;
+
+        function setCoordinates(event) {
+            const canvas = document.getElementById('canvas');
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            if (!startSet) {
+                document.getElementById('startX').value = x;
+                document.getElementById('startY').value = y;
+                startSet = true;
+            } else {
+                document.getElementById('endX').value = x;
+                document.getElementById('endY').value = y;
+                startSet = false;
+                drawLine();
+            }
+        }
+
         function drawLine() {
             const canvas = document.getElementById('canvas');
             const ctx = canvas.getContext('2d');
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             const startX = parseInt(document.getElementById('startX').value);
             const startY = parseInt(document.getElementById('startY').value);
             const endX = parseInt(document.getElementById('endX').value);
             const endY = parseInt(document.getElementById('endY').value);
+
+            if (previousLine) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.putImageData(previousLine, 0, 0);
+            }
 
             let dx = endX - startX;
             let dy = endY - startY;
@@ -58,6 +80,9 @@
             }
 
             ctx.stroke();
+
+            // Save the current line to be used as the background for the next line
+            previousLine = ctx.getImageData(0, 0, canvas.width, canvas.height);
         }
     </script>
 </body>
